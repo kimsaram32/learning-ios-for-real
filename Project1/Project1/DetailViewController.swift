@@ -2,14 +2,17 @@ import UIKit
 
 class DetailViewController: UIViewController {
     @IBOutlet var imageView: UIImageView!
-    var selectedImage: String?
+    
+    var selectedPictureIndex: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let imageToLoad = selectedImage {
-            title = imageToLoad
-            imageView.image = UIImage(named: imageToLoad)
+        if let selectedPictureIndex {
+            let storage = PictureStorage.getInstance()
+            let picture = storage.pictures[selectedPictureIndex]
+            title = "Picture \(selectedPictureIndex + 1) of \(storage.pictures.count)"
+            imageView.image = UIImage(named: picture)
         }
     }
     
