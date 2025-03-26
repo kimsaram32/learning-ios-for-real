@@ -8,10 +8,11 @@
 import UIKit
 
 class ViewController: UIViewController {
-    @IBOutlet var flagButton1: UIButton!
-    @IBOutlet var flagButton2: UIButton!
-    @IBOutlet var flagButton3: UIButton!
-    @IBOutlet var answerLabel: UILabel!
+    lazy var flagButtons = [UIButton(), UIButton(), UIButton()]
+    lazy var flagButton1 = UIButton()
+    lazy var flagButton2 = UIButton()
+    lazy var flagButton3 = UIButton()
+    lazy var answerLabel = UILabel()
     
     let TITLE = "Guess the flag"
     let TOTAL_QUESTIONS = 10
@@ -25,10 +26,31 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        for button in [flagButton1, flagButton2, flagButton3] as [UIButton] {
+        view.addSubview(answerLabel)
+        answerLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        for (index, button) in flagButtons.enumerated() {
+            view.addSubview(button)
+
+            button.translatesAutoresizingMaskIntoConstraints = false
+
+            button.tag = index
+            button.addTarget(self, action: #selector(buttonTouchUpInside), for: .touchUpInside)
+
             button.layer.borderColor = UIColor.lightGray.cgColor
             button.layer.borderWidth = 2
         }
+        
+        NSLayoutConstraint.activate([
+            flagButtons[1].centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            flagButtons[1].centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            flagButtons[0].centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            flagButtons[0].bottomAnchor.constraint(equalTo: flagButtons[1].topAnchor, constant: -30),
+            flagButtons[2].centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            flagButtons[2].topAnchor.constraint(equalTo: flagButtons[1].bottomAnchor, constant: 30),
+            answerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            answerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 94),
+        ])
         
         askQuestion()
     }
@@ -41,9 +63,10 @@ class ViewController: UIViewController {
         correctAnswer = Int.random(in: 0...2)
         
         answerLabel.text = countries[correctAnswer].uppercased()
-        flagButton1.setImage(UIImage(named: countries[0]), for: .normal)
-        flagButton2.setImage(UIImage(named: countries[1]), for: .normal)
-        flagButton3.setImage(UIImage(named: countries[2]), for: .normal)
+
+        for (index, button) in flagButtons.enumerated() {
+            button.setImage(UIImage(named: countries[index]), for: .normal)
+        }
     }
     
     @IBAction func buttonTouchUpInside(_ sender: UIButton) {
